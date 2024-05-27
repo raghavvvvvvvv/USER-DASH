@@ -1,110 +1,97 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Container,
-  Grid,
-  TextField
+import { 
+  Button, 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  Container, 
+  Grid, 
+  Radio, 
+  RadioGroup, 
+  FormControlLabel, 
+  FormControl, 
+  FormLabel, 
+  Typography 
 } from '@mui/material';
-import { getDocument } from 'pdfjs-dist';
-
-const extractTextFromPDF = async (file) => {
-  const arrayBuffer = await file.arrayBuffer();
-  const pdf = await getDocument(new Uint8Array(arrayBuffer)).promise;
-  const page = await pdf.getPage(1);
-  const textContent = await page.getTextContent();
-  return textContent.items.map((item) => item.str).join('\n');
-};
 
 // Resume Upload Component
-const ResumeUpload = ({ onResumeUpload }) => {
-  const handleResumeUpload = async (e) => {
+const ResumeUpload = ({ onResumeUpload, resumeName }) => {
+  const handleResumeUpload = (e) => {
     const file = e.target.files[0];
-    const text = await extractTextFromPDF(file);
-    onResumeUpload(file, text);
+    onResumeUpload(file);
   };
 
   return (
     <Card>
       <CardHeader title="Upload Resume" />
       <CardContent>
-        <input
-          accept=".pdf,.doc,.docx"
-          style={{ display: 'none' }}
-          id="resume-upload"
-          type="file"
-          onChange={handleResumeUpload}
+        <input 
+          accept=".pdf,.doc,.docx" 
+          style={{ display: 'none' }} 
+          id="resume-upload" 
+          type="file" 
+          onChange={handleResumeUpload} 
         />
         <label htmlFor="resume-upload">
           <Button variant="contained" component="span">
             Upload Resume
           </Button>
         </label>
-      </CardContent>
-    </Card>
-  );
-};
-
-// Dataset Selection Component
-const DatasetSelection = ({ datasetFilePath, onDatasetFilePathChange }) => {
-  return (
-    <Card>
-      <CardHeader title="Dataset Selection" />
-      <CardContent>
-        <TextField
-          fullWidth
-          label="Enter dataset file path"
-          value={datasetFilePath}
-          onChange={onDatasetFilePathChange}
-        />
+        {resumeName && <Typography variant="body2">{`Uploaded: ${resumeName}`}</Typography>}
       </CardContent>
     </Card>
   );
 };
 
 // Custom Dataset Upload Component
-const CustomDatasetUpload = ({ onAddDataset }) => {
+const CustomDatasetUpload = ({ onAddDataset, datasetName }) => {
   const [customDataset, setCustomDataset] = useState(null);
 
   const handleCustomDatasetUpload = (e) => {
     const file = e.target.files[0];
     setCustomDataset(file);
-  };
-
-  const handleAddDataset = () => {
-    if (customDataset) {
-      onAddDataset(customDataset);
-      setCustomDataset(null);
-    }
+    onAddDataset(file);
   };
 
   return (
     <Card>
       <CardHeader title="Upload Custom Dataset" />
       <CardContent>
-        <input
-          style={{ display: 'none' }}
-          id="custom-dataset-upload"
-          type="file"
-          onChange={handleCustomDatasetUpload}
+        <input 
+          style={{ display: 'none' }} 
+          id="custom-dataset-upload" 
+          type="file" 
+          onChange={handleCustomDatasetUpload} 
         />
         <label htmlFor="custom-dataset-upload">
           <Button variant="contained" component="span">
             Choose File
           </Button>
         </label>
-        {customDataset && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleAddDataset}
-            style={{ marginLeft: '10px' }}
+        {datasetName && <Typography variant="body2">{`Uploaded: ${datasetName}`}</Typography>}
+      </CardContent>
+    </Card>
+  );
+};
+
+// Dataset Selection Component
+const DatasetSelection = ({ selectedDataset, onDatasetChange }) => {
+  return (
+    <Card>
+      <CardHeader title="Select Dataset" />
+      <CardContent>
+        <FormControl component="fieldset">
+          <FormLabel component="legend">Dataset Option</FormLabel>
+          <RadioGroup
+            aria-label="dataset"
+            name="dataset"
+            value={selectedDataset}
+            onChange={onDatasetChange}
           >
-            Add Dataset
-          </Button>
-        )}
+            <FormControlLabel value="default" control={<Radio />} label="Use Default Dataset" />
+            <FormControlLabel value="custom" control={<Radio />} label="Upload Custom Dataset" />
+          </RadioGroup>
+        </FormControl>
       </CardContent>
     </Card>
   );
@@ -113,29 +100,37 @@ const CustomDatasetUpload = ({ onAddDataset }) => {
 // Dashboard Component
 const Dashboard = () => {
   const [resumeFile, setResumeFile] = useState(null);
-  const [resumeText, setResumeText] = useState('');
-  const [datasetFilePath, setDatasetFilePath] = useState('');
-  const [datasets, setDatasets] = useState([]);
+  const [selectedDataset, setSelectedDataset] = useState('default');
+  const [customDatasets, setCustomDatasets] = useState([]);
+  const [resumeName, setResumeName] = useState('');
+  const [datasetName, setDatasetName] = useState('');
 
-  const handleResumeUpload = (file, text) => {
+  // Predefined dataset file path set in the backend
+  const predefinedDatasetFilePath = "/path/to/predefined/dataset";
+
+  const handleResumeUpload = (file) => {
     setResumeFile(file);
-    setResumeText(text);
+    setResumeName(file.name);
   };
 
-  const handleDatasetFilePathChange = (e) => {
-    setDatasetFilePath(e.target.value);
+  const handleDatasetChange = (e) => {
+    setSelectedDataset(e.target.value);
+    setDatasetName('');
   };
 
   const handleAddDataset = (dataset) => {
-    setDatasets([...datasets, dataset]);
+    setCustomDatasets([...customDatasets, dataset]);
+    setDatasetName(dataset.name);
   };
 
   const handleAnalyze = () => {
+    const datasetToUse = selectedDataset === 'default' 
+      ? predefinedDatasetFilePath 
+      : customDatasets;
+
     // Perform analysis logic here
     console.log('Analyzing resume:', resumeFile);
-    console.log('Resume text:', resumeText);
-    console.log('Dataset file path:', datasetFilePath);
-    console.log('Custom datasets:', datasets);
+    console.log('Dataset(s) in use:', datasetToUse);
   };
 
   return (
@@ -143,21 +138,29 @@ const Dashboard = () => {
       <h2>Dashboard</h2>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <ResumeUpload onResumeUpload={handleResumeUpload} />
-        </Grid>
-        <Grid item xs={12}>
-          <DatasetSelection
-            datasetFilePath={datasetFilePath}
-            onDatasetFilePathChange={handleDatasetFilePathChange}
+          <ResumeUpload 
+            onResumeUpload={handleResumeUpload} 
+            resumeName={resumeName} 
           />
         </Grid>
         <Grid item xs={12}>
-          <CustomDatasetUpload onAddDataset={handleAddDataset} />
+          <DatasetSelection
+            selectedDataset={selectedDataset}
+            onDatasetChange={handleDatasetChange}
+          />
         </Grid>
+        {selectedDataset === 'custom' && (
+          <Grid item xs={12}>
+            <CustomDatasetUpload
+              onAddDataset={handleAddDataset}
+              datasetName={datasetName}
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
-          <Button
-            variant="contained"
-            color="secondary"
+          <Button 
+            variant="contained" 
+            color="secondary" 
             onClick={handleAnalyze}
           >
             Analyze
