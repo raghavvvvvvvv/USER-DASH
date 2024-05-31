@@ -10,17 +10,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
     "@coreui/icons": "^3.0.1",
     "@coreui/react": "^5.0.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@google-cloud/vision": "^4.3.0",
     "@mui/material": "^5.15.18",
+    "axios": "^1.7.2",
+    "framer-motion": "^11.2.6",
     "pdf-lib": "^1.17.1",
     "pdf-parse": "^1.1.1",
     "pdfjs-dist": "^4.2.67",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-pdf": "^8.0.2"
+    "react-pdf": "^8.0.2",
+    "react-router-dom": "^6.23.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
