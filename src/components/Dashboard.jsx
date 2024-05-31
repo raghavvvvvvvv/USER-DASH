@@ -1,4 +1,4 @@
-// import React, { useState } from 'react';
+// import React, { useState } from 'react'; 
 // import { 
 //   Button, 
 //   Card, 
@@ -336,11 +336,13 @@ const Dashboard = () => {
       console.error('Error uploading resume:', error);
     }
 
+  const handleAnalyze = () => {
     const datasetToUse = selectedDataset === 'default' 
       ? predefinedDatasetFilePath 
       : customDatasets;
 
     // Perform additional analysis logic here if needed
+    // Perform analysis logic here
     console.log('Analyzing resume:', resumeFile);
     console.log('Dataset(s) in use:', datasetToUse);
   };
