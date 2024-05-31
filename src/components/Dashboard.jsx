@@ -181,7 +181,6 @@
 
 
 
-
 import React, { useState } from 'react';
 import { 
   Button, 
@@ -230,11 +229,8 @@ const ResumeUpload = ({ onResumeUpload, resumeName }) => {
 
 // Custom Dataset Upload Component
 const CustomDatasetUpload = ({ onAddDataset, datasetName }) => {
-  const [customDataset, setCustomDataset] = useState(null);
-
   const handleCustomDatasetUpload = (e) => {
     const file = e.target.files[0];
-    setCustomDataset(file);
     onAddDataset(file);
   };
 
@@ -335,16 +331,6 @@ const Dashboard = () => {
     } catch (error) {
       console.error('Error uploading resume:', error);
     }
-
-  const handleAnalyze = () => {
-    const datasetToUse = selectedDataset === 'default' 
-      ? predefinedDatasetFilePath 
-      : customDatasets;
-
-    // Perform additional analysis logic here if needed
-    // Perform analysis logic here
-    console.log('Analyzing resume:', resumeFile);
-    console.log('Dataset(s) in use:', datasetToUse);
   };
 
   return (
@@ -392,3 +378,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
