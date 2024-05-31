@@ -6,7 +6,7 @@ import os
 from waitress import serve
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app, origins="*")
 
 @app.route('/api/upload-resume', methods=['POST'])
 def upload_resume():
