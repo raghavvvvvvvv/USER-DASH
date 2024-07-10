@@ -202,3 +202,24 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
+  .error-message, .success-message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    width: 500px;
+    text-align: center;
+  }
+  
+  .error-message {
+    background-color: #ffdddd;
+    color: #d8000c;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .success-message {
+    background-color: #ddffdd;
+    color: #4caf50;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  

@@ -141,6 +141,8 @@ function ResumeUploader() {
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("No selected file");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const toolbarPluginInstance = toolbarPlugin();
   const { renderDefaultToolbar } = toolbarPluginInstance;
@@ -164,6 +166,8 @@ function ResumeUploader() {
     formData.append('resume', file);
 
     setIsLoading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
 
     try {
       const response = await axios.post('http://127.0.0.1:5000/api/upload-resume', formData, {
@@ -173,10 +177,10 @@ function ResumeUploader() {
       });
 
       console.log(response.data);
-      // Handle the response data as needed
+      setSuccessMessage("File uploaded successfully!");
     } catch (error) {
       console.error('Error uploading file:', error.response ? error.response.data : error.message);
-      alert('An error occurred while uploading the file.');
+      setErrorMessage('An error occurred while uploading the file.');
     } finally {
       setIsLoading(false);
     }
@@ -204,6 +208,18 @@ function ResumeUploader() {
         </div>
       )}
 
+      {errorMessage && (
+        <div className="error-message">
+          <p>{errorMessage}</p>
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="success-message">
+          <p>{successMessage}</p>
+        </div>
+      )}
+
       {!isLoading && file && (
         <>
           <section className='uploaded-row'>
@@ -214,6 +230,8 @@ function ResumeUploader() {
                 onClick={() => {
                   setFile(null);
                   setFileName("No selected File");
+                  setErrorMessage("");
+                  setSuccessMessage("");
                 }}
               />
             </span>
@@ -239,3 +257,4 @@ function ResumeUploader() {
 }
 
 export default ResumeUploader;
+
