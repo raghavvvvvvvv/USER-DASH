@@ -1,0 +1,5 @@
+Flask
+pdfplumber
+requests
+logging
+flask_cors
