@@ -186,75 +186,95 @@ function ResumeUploader() {
     }
   };
 
-  return (
-    <main>
-      {!file && (
-        <form onClick={() => document.querySelector(".input-field").click()}>
-          <input 
-            type="file" 
-            accept=".pdf" 
-            className='input-field' 
-            hidden 
-            onChange={handleFileChange} 
-          />
-          <MdCloudUpload color='#1475cf' size={60} />
-          <p>Browse Files to upload</p>
-        </form>
-      )}
-
-      {isLoading && (
-        <div className="loading-animation">
-          <p>Uploading...</p>
-        </div>
-      )}
-
-      {errorMessage && (
-        <div className="error-message">
-          <p>{errorMessage}</p>
-        </div>
-      )}
-
-      {successMessage && (
-        <div className="success-message">
-          <p>{successMessage}</p>
-        </div>
-      )}
-
-      {!isLoading && file && (
-        <>
-          <section className='uploaded-row'>
-            <AiFillFileImage color='#1475cf' />
-            <span className='upload-content'>
-              {fileName} - 
-              <MdDelete
-                onClick={() => {
-                  setFile(null);
-                  setFileName("No selected File");
-                  setErrorMessage("");
-                  setSuccessMessage("");
-                }}
-              />
-            </span>
-          </section>
-
-          <div className="pdf-preview">
-            <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
-              <Viewer 
-                fileUrl={URL.createObjectURL(file)} 
-                plugins={[toolbarPluginInstance, zoomPluginInstance]}
-              />
-            </Worker>
-            {renderDefaultToolbar()}
+  const renderMessage = () => {
+    if (errorMessage) {
+      return (
+        <div className="message-overlay">
+          <div className="message-content error-message">
+            <p>{errorMessage}</p>
+            <button onClick={() => setErrorMessage("")}>Close</button>
           </div>
+        </div>
+      );
+    }
 
-          <button onClick={handleUpload} disabled={isLoading}>
-            {isLoading ? 'Extracting...' : 'Upload and Extract'}
-          </button>
-        </>
-      )}
-    </main>
+    if (successMessage) {
+      return (
+        <div className="message-overlay">
+          <div className="message-content success-message">
+            <p>{successMessage}</p>
+            <button onClick={() => setSuccessMessage("")}>Close</button>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <>
+      <div className={(errorMessage || successMessage) ? 'blur-background' : ''}>
+        <main>
+          {!file && (
+            <form onClick={() => document.querySelector(".input-field").click()}>
+              <input 
+                type="file" 
+                accept=".pdf" 
+                className='input-field' 
+                hidden 
+                onChange={handleFileChange} 
+              />
+              <MdCloudUpload color='#1475cf' size={60} />
+              <p>Browse Files to upload</p>
+            </form>
+          )}
+
+          {isLoading && (
+            <div className="loading-animation">
+              <p>Uploading...</p>
+            </div>
+          )}
+
+          {!isLoading && file && (
+            <>
+              <section className='uploaded-row'>
+                <AiFillFileImage color='#1475cf' />
+                <span className='upload-content'>
+                  {fileName} - 
+                  <MdDelete
+                    onClick={() => {
+                      setFile(null);
+                      setFileName("No selected File");
+                      setErrorMessage("");
+                      setSuccessMessage("");
+                    }}
+                  />
+                </span>
+              </section>
+
+              <div className="pdf-preview">
+                <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
+                  <Viewer 
+                    fileUrl={URL.createObjectURL(file)} 
+                    plugins={[toolbarPluginInstance, zoomPluginInstance]}
+                  />
+                </Worker>
+                {renderDefaultToolbar()}
+              </div>
+
+              <button onClick={handleUpload} disabled={isLoading}>
+                {isLoading ? 'Extracting...' : 'Next'}
+              </button>
+            </>
+          )}
+        </main>
+      </div>
+      {renderMessage()}
+    </>
   );
 }
 
 export default ResumeUploader;
+
 

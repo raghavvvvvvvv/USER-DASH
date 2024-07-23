@@ -101,7 +101,6 @@
 
 
 
-
    body {
     margin: 0;
     display: flex;
@@ -181,8 +180,8 @@
   
   .pdf-preview {
     margin: 20px 0;
-    width: 500px;
-    height: 600px;
+    width: 520px;
+    height: 350px;
     overflow: auto;
     border: 1px solid #ddd;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -202,24 +201,56 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
-  .error-message, .success-message {
-    margin-top: 20px;
-    padding: 10px;
+  .message-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+  
+  .message-content {
+    background: white;
+    padding: 20px;
     border-radius: 5px;
-    width: 500px;
     text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1001; /* Ensure it's above the blur effect */
+  }
+  
+  .blur-background main {
+    filter: blur(5px);
   }
   
   .error-message {
     background-color: #ffdddd;
     color: #d8000c;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
   .success-message {
     background-color: #ddffdd;
     color: #4caf50;
+  }
+  
+  .message-content button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #1475cf;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.25s, box-shadow 0.25s;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
   
+  .message-content button:hover {
+    background-color: #0e5aa7;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  }
   
